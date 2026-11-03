@@ -1,0 +1,3 @@
+Natural Earth public-domain low-resolution world boundaries. https://www.naturalearthdata.com/about/terms-of-use/
+ISO alpha-2 lookup: pycountry/ISO; some small territories absent from this display background remain in statistical tables.
+Country geometry describes the supplied snapshot, not historical borders.

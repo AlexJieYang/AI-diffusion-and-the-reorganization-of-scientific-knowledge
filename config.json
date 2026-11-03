@@ -1,0 +1,49 @@
+{
+  "research_dir": "C:/OpenAlex/SciSciNet2_research",
+  "output_dir": "results_scored_sources",
+  "end_year": 2024,
+  "trend_start": 1990,
+  "ai_start": 1980,
+  "batch_rows": 1000000,
+  "max_rss_gib": 84,
+  "physical_memory_fraction": 0.8,
+  "plot_sample_n": 250000,
+  "seed": 20261031,
+  "r_export_fraction": 1.0,
+  "baseline_years": [
+    2010,
+    2014
+  ],
+  "comparison_years": [
+    2020,
+    2024
+  ],
+  "min_country_period_mass": 20,
+  "min_cell_period_mass": 5,
+  "fixed_support_start": 2000,
+  "min_ai_annual_mass": 1,
+  "min_ai_period_mass": 3,
+  "portfolio_window_years": 5,
+  "standardization_window_years": 5,
+  "min_profile_cell_n": 5,
+  "min_surface_n": 20,
+  "duckdb_memory_gib": 16,
+  "source_labels": {},
+  "representative_source_ids": [],
+  "representative_source_n": 6,
+  "min_source_group_n": 20,
+  "edges_enabled": true,
+  "edge_columns": {
+    "citing": "citing_id",
+    "cited": "cited_id"
+  },
+  "paths": {
+    "papers": "core/papers.parquet",
+    "ai": "extended/AI_papers.parquet",
+    "members": "extended/country_members.parquet",
+    "idr": "metrics/interdisciplinarity.parquet",
+    "semantic": "metrics/embedding_paper.parquet",
+    "history": "metrics/embedding_field_history.parquet",
+    "edges": "stage/edges/data.parquet"
+  }
+}

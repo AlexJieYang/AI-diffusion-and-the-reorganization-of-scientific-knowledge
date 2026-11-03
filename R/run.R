@@ -1,0 +1,5 @@
+args <- commandArgs(trailingOnly=TRUE)
+project <- if(length(args)) args[[1]] else getwd()
+config_path <- if(length(args)>1) args[[2]] else file.path(project,'config.json')
+source(file.path(project,'R','analysis.R'))
+run_associations(project, config_path=config_path)
