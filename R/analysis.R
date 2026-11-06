@@ -1,4 +1,4 @@
-# Conditional descriptive associations; these specifications do not identify causal effects.
+# Conditional descriptive associations.
 run_associations <- function(project_root=getwd(),config_path=file.path(project_root,'config.json')) {
   packages <- c('fixest','arrow','data.table','jsonlite')
   absent <- packages[!vapply(packages, requireNamespace, logical(1), quietly=TRUE)]

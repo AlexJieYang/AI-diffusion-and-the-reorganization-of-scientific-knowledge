@@ -69,7 +69,8 @@ def profile_comparisons(c):
 
 def reference_cohorts(c):
     # Plot-level aggregation of existing edges, never recalculation of paper metrics.
-    from .runtime import analytical_db,query_batches,sql_string,sql_identifier,SingleWriter
+    from .runtime import analytical_db,sql_string
+    from .identifiers import paper_id_sql
     from .scope import assert_sample
     d=dirs(c);require_scope(c)
     columns=['citing_year','cited_year','ai_group','reference_ai_group','edges','reference_age']
@@ -86,24 +87,20 @@ def reference_cohorts(c):
         if len(match)!=1:raise KeyError('Configure edge_columns explicitly.')
         citing,cited=match[0]
     else:citing,cited=col['citing'],col['cited']
-    import pyarrow as pa
-    import pyarrow.parquet as pq
-    def id_expr(column):
-        dtype=pq.ParquetFile(path).schema_arrow.field(column).type
-        name=sql_identifier(column)
-        if pa.types.is_floating(dtype):raise ValueError('Citation IDs cannot be floating point.')
-        if pa.types.is_integer(dtype):return f'CAST({name} AS UBIGINT)'
-        return "CAST(regexp_replace(trim(CAST("+name+" AS VARCHAR)), '^(https?://openalex[.]org/)?W', '') AS UBIGINT)"
+    core_path=source(c,'papers')
+    score_path=source(c,'ai')
     m=pd.read_parquet(d['data']/'papers.parquet',columns=['paper_id','year','AIProb'])
     assert_sample(m,c,'reference-cohort citing papers')
     con=analytical_db(c)
     con.register('selected',m)
     # The cited endpoint remains the original local reference universe so that
     # the graph display is compatible with the user's precomputed indicators.
-    query=f'''WITH e AS (SELECT {id_expr(citing)} AS citing_id,{id_expr(cited)} AS cited_id
+    query=f'''WITH e AS (SELECT {paper_id_sql(path,citing)} AS citing_id,{paper_id_sql(path,cited)} AS cited_id
                           FROM read_parquet({sql_string(path)})),
-       core AS (SELECT paper_id,year FROM read_parquet({sql_string(source(c,'papers'))})),
-       scores AS (SELECT paper_id,AIProb FROM read_parquet({sql_string(source(c,'ai'))}))
+       core AS (SELECT {paper_id_sql(core_path,'paper_id',allow_float=True)} AS paper_id,year
+                FROM read_parquet({sql_string(core_path)})),
+       scores AS (SELECT {paper_id_sql(score_path,'paper_id',allow_float=True)} AS paper_id,AIProb
+                  FROM read_parquet({sql_string(score_path)}))
        SELECT a.year AS citing_year,b.year AS cited_year,
           CAST(a.AIProb>0.5 AS TINYINT) AS ai_group,
           CASE WHEN r.AIProb IS NULL THEN 2 WHEN r.AIProb>0.5 THEN 1 ELSE 0 END AS reference_ai_group,
