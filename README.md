@@ -33,17 +33,7 @@ python -m unittest discover -s tests -v
 
 ## 使用本地已有指标
 
-| 本地输入，相对 research 目录 | 用途 |
-| --- | --- |
-| `core/papers.parquet` | 论文、年份、`source_id`、团队、参考年龄和已有引用指标 |
-| `extended/AI_papers.parquet` | `paper_id` 与 `AIProb` |
-| `extended/country_members.parquet` | 论文—国家归属 |
-| `metrics/interdisciplinarity.parquet` | 预计算的参考学科多样性及其覆盖率 |
-| `metrics/embedding_paper.parquet` | 预计算的参考语义距离及其覆盖率 |
-| `metrics/embedding_field_history.parquet` | 预计算的历史学科语义偏离 |
-| `stage/edges/data.parquet` | 现成引用边，仅汇总引用年份与队列 |
-
-可选读取 `metrics/team_affiliation_diversity.parquet` 的国家归属覆盖指标。设置 `edges_enabled=false` 可以关闭引用队列；相应图内保留原面板并标示无数据。
+通过 `config.json` 的 `research_dir` 和 `paths` 设置数据目录与表路径。数据格式和指标来源见 [docs/DATA_SCHEMA.md](docs/DATA_SCHEMA.md)。
 
 预计算指标按 `paper_id` 原值连接，不重新计算其参考总体、学科定义、标准化、覆盖率或缺失值。参考学科多样性与历史学科距离作为论文层面的既有结果指标保留；它们不用于六领域筛选或分组。`c5_norm` 等既有标准化指标也保留原定义。C5 比较、R 输入及相关描述只使用截至 2019 年的成熟队列；母表保存输入原值。
 
@@ -55,7 +45,7 @@ python -m unittest discover -s tests -v
 
 为保持紧凑的图布局，图1d、图2a/b/e、图4d使用同一组最多六个示例来源。自动选择规则为：在 `comparison_years`（默认 2020—2024）内两组分别至少 `min_source_group_n=20` 篇，然后按该时期全部评分论文量降序排列，ID 用于并列排序。选择不使用多样性差异、回归系数或显著性。来源不足六个时只展示实际合格来源，不填造来源。示例不限制总体、国家组合、source 调整或 R 模型的样本，也不代表所有来源的随机样本。
 
-`source_catalog.csv` 保存所有来源的真实 ID、两组样本数、资格及展示顺序。本地准备后的 source 表不含名称，因此默认图签使用 `S` 加真实 ID。可通过配置为已核实的 ID 指定短名称，或用 `representative_source_ids` 固定最多六个有足够支持的来源；列表中的 ID 仍需满足同一支持规则。`source_labels` 的键使用不带 S 前缀的十进制 ID 字符串。
+`source_catalog.csv` 保存所有来源的真实 ID、两组样本数、资格及展示顺序。默认图签使用 `S` 加真实 ID。可通过配置为已核实的 ID 指定短名称，或用 `representative_source_ids` 固定最多六个有足够支持的来源；列表中的 ID 仍需满足同一支持规则。`source_labels` 的键使用不带 S 前缀的十进制 ID 字符串。
 
 ## 比较与支持范围
 
@@ -81,7 +71,7 @@ R 论文模型以 publishing source × year 为固定效应，使用原有预计
 
 ## 输出
 
-`data` 保存母表、国家/source 汇总及 R 输入；`tables` 保存统计表与绘图来源；`figures` 保存五张主图；`r` 保存可选模型；`status` 保存运行所需的配置和样本一致性信息。代码包不含本地原始数据或研究结果。测试使用明确标识的合成数据，核验完整流程、指标原值、计数守恒、支持变化、表图一致性与布局。
+`data` 保存母表、国家/source 汇总及 R 输入；`tables` 保存统计表与绘图来源；`figures` 保存五张主图；`r` 保存可选模型；`status` 保存运行所需的配置和样本一致性信息。测试使用明确标识的合成数据，核验完整流程、指标原值、计数守恒、支持变化、表图一致性与布局。
 
 ## 源码检查
 
@@ -89,7 +79,7 @@ R 论文模型以 publishing source × year 为固定效应，使用原有预计
 python tools/check_sources.py
 ```
 
-GitHub Actions 使用同一检查，仅解析 Python 源码、JSON 和 Notebook，检查 Notebook 未保存输出或执行元数据。它不执行研究代码、Notebook、模型或模拟。R 单元格保留为源码；这些静态检查不验证 R 语法。已有 Python 测试可在安装依赖后按上文命令主动运行。
+GitHub Actions 使用同一检查，仅解析 Python 源码、JSON 和 Notebook，检查 Notebook 未保存输出或执行元数据。R 单元格保留为源码。已有 Python 测试可在安装依赖后按上文命令主动运行。
 
 本地输入、结果、虚拟环境和 Python 缓存由 `.gitignore` 排除。外部数据应放在 `data/SciSciNet2_research/`，或通过配置使用其他目录。
 
