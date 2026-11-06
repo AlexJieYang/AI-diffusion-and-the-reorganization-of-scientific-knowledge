@@ -1,5 +1,5 @@
 {
-  "research_dir": "C:/OpenAlex/SciSciNet2_research",
+  "research_dir": "data/SciSciNet2_research",
   "output_dir": "results_scored_sources",
   "end_year": 2024,
   "trend_start": 1990,

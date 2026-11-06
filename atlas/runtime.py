@@ -12,7 +12,7 @@ pa.set_io_thread_count(4)
 ROOT = Path(__file__).resolve().parents[1]
 
 DEFAULT = dict(
-    research_dir='C:/OpenAlex/SciSciNet2_research',
+    research_dir='data/SciSciNet2_research',
     output_dir='results_scored_sources', end_year=2024, trend_start=1990, ai_start=1980,
     batch_rows=1_000_000, max_rss_gib=384, physical_memory_fraction=.80,
     plot_sample_n=250_000, seed=20261031, r_export_fraction=1.0,

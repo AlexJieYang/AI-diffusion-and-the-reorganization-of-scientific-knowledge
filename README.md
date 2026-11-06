@@ -6,7 +6,7 @@
 
 ## 从头运行
 
-解压完整代码包到新的代码目录，在代码根目录运行。先检查 `config.json` 中的 `research_dir`；默认值为 `C:/OpenAlex/SciSciNet2_research`，输出为独立的 `results_scored_sources`。
+克隆仓库后，在代码根目录运行。先检查 `config.json` 中的 `research_dir`；默认值为 `data/SciSciNet2_research`，输出为独立的 `results_scored_sources`。
 
 ```bash
 python -m pip install -r requirements.txt
@@ -82,3 +82,17 @@ R 论文模型以 publishing source × year 为固定效应，使用原有预计
 ## 输出
 
 `data` 保存母表、国家/source 汇总及 R 输入；`tables` 保存统计表与绘图来源；`figures` 保存五张主图；`r` 保存可选模型；`status` 保存运行所需的配置和样本一致性信息。代码包不含本地原始数据或研究结果。测试使用明确标识的合成数据，核验完整流程、指标原值、计数守恒、支持变化、表图一致性与布局。
+
+## 源码检查
+
+```bash
+python tools/check_sources.py
+```
+
+GitHub Actions 使用同一检查，仅解析 Python 源码、JSON 和 Notebook，检查 Notebook 未保存输出或执行元数据。它不执行研究代码、Notebook、模型或模拟。R 单元格保留为源码；这些静态检查不验证 R 语法。已有 Python 测试可在安装依赖后按上文命令主动运行。
+
+本地输入、结果、虚拟环境和 Python 缓存由 `.gitignore` 排除。外部数据应放在 `data/SciSciNet2_research/`，或通过配置使用其他目录。
+
+## 许可
+
+研究代码采用 [MIT 许可](LICENSE)。SciSciNet2 派生输入、预计算指标及其他外部数据仍适用来源的许可与获取条件。地图素材来源和使用条件见 [assets/MAP_LICENSE.txt](assets/MAP_LICENSE.txt)。
